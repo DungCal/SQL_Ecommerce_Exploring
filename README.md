@@ -34,5 +34,8 @@ This project will make some analysis including:
 <div id='c3'/>
 ## 3. How to access and import data
 
-- Go to https://console.cloud.google.com/
+- Go to https://console.cloud.google.com/bigquery
+- Create a project
+- Once you have a project, use [this link](https://console.cloud.google.com/marketplace/product/obfuscated-ga360-data/obfuscated-ga360-data?project=lexical-script-761) to access the dataset. Click **View Dataset** to open the dataset in your project.
+- Click **Query Table** to run a query.
 
