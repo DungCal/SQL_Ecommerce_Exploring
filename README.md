@@ -39,7 +39,7 @@ This project will make some analysis including:
 - Once you have a project, use [this link](https://console.cloud.google.com/marketplace/product/obfuscated-ga360-data/obfuscated-ga360-data?project=lexical-script-761) to access the dataset. Click **View Dataset** to open the dataset in your project.
 - Click **Query Table** to run a query.
 
-<div id='c3'/>
+<div id='c4'/>
 
 ## 4. Read and explain dataset
 
@@ -65,3 +65,36 @@ totals.pageviews | INTEGER | Total number of pageviews within the session. |
 | hits.product.productSKU	| STRING | Product SKU. |
 | hits.product.v2ProductName | STRING |	Product Name. |
 | fullVisitorId	| STRING | The unique visitor ID. |
+
+<div id='c5'/>
+
+## Explore Data Analysis
+
+<div id='c6'/>
+
+## 6. Ask questions and solve it
+
+**Query 01: calculate total visit, pageview, transaction for Jan, Feb and March 2017 (order by month)**
+
+~~~sql
+with
+  jan_feb_mar as(--3 month data
+    select *
+      ,(case when _table_suffix between '0101' and '0131' then '201701'
+             when _table_suffix between '0201' and '0231' then '201702'
+             when _table_suffix between '0301' and '0331' then '201703'
+      end) as new_month
+    FROM `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`
+    where _table_suffix between '0101' and '0331')
+
+select --total fact
+  new_month as month
+  ,sum(totals.visits) as visits
+  ,sum(totals.pageviews) as pageviews
+  ,sum(totals.transactions) as transactions 
+from jan_feb_mar
+group by new_month
+order by month;
+~~~~
+
+
