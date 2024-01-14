@@ -59,10 +59,8 @@ totals.pageviews | INTEGER | Total number of pageviews within the session. |
 | hits | RECORD	| This row and nested fields are populated for any and all types of hits. |
 | hits.eCommerceAction | RECORD	| This section contains all of the ecommerce hits that occurred during the session. This is a repeated field and has an entry for each hit that was collected. |
 | hits.eCommerceAction.action_type | STRING	| "The action type. Click through of product lists = 1, Product detail views = 2, Add product(s) to cart = 3, Remove product(s) from cart = 4, Check out = 5, Completed purchase = 6, Refund of purchase = 7, Checkout options = 8, Unknown = 0. Usually this action type applies to all the products in a hit, with the following exception: when hits.product.isImpression = TRUE, the corresponding product is a product impression that is seen while the product action is taking place (i.e., a ""product in list view"").
-<br>
-Example query to calculate number of products in list views:
-<br>
-SELECT
+<br>Example query to calculate number of products in list views:
+<br>SELECT
 <br>
 COUNT(hits.product.v2ProductName)
 <br>
