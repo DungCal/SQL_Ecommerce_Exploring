@@ -17,3 +17,6 @@ The sample dataset contains obfuscated Google Analytics 360 data from the Google
 - Traffic source data: information about where website visitors originate. This includes data about organic traffic, paid search traffic, display traffic, etc.
 - Content data: information about the behavior of users on the site. This includes the URLs of pages that visitors look at, how they interact with content, etc.
 - Transactional data: information about the transactions that occur on the Google Merchandise Store website.
+
+Based on the dataset, we perform queries to analyze business activities in 2017, include calculating total bounces, hits and pageviews, analyzing the behaviours of customers, and other analysis of porducts. This project aims to get information of business situation, improve marketing efficiency and analysing products.
+
