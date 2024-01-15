@@ -77,24 +77,20 @@ totals.pageviews | INTEGER | Total number of pageviews within the session. |
 **Query 01: calculate total visit, pageview, transaction for Jan, Feb and March 2017 (order by month)**
 
 ~~~sql
-with
-  jan_feb_mar as(--3 month data
-    select *
-      ,(case when _table_suffix between '0101' and '0131' then '201701'
-             when _table_suffix between '0201' and '0231' then '201702'
-             when _table_suffix between '0301' and '0331' then '201703'
-      end) as new_month
-    FROM `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`
-    where _table_suffix between '0101' and '0331')
-
-select --total fact
-  new_month as month
-  ,sum(totals.visits) as visits
-  ,sum(totals.pageviews) as pageviews
-  ,sum(totals.transactions) as transactions 
-from jan_feb_mar
-group by new_month
-order by month;
+   SELECT 
+    FORMAT_DATE("%Y%m",PARSE_DATE("%Y%m%d",date)) as month_extract
+    ,SUM(totals.visits) as visits
+    ,SUM(totals.pageviews) as pageviews
+    ,SUM(totals.transactions) as transactions
+    ,ROUND(SUM(totals.totalTransactionRevenue)/POW(10,6),2) revenue
+   FROM `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`
+   WHERE _table_suffix BETWEEN '0101' AND '0331'
+   GROUP BY month_extract
 ~~~~
 
+| month_extract | visits | pageviews | transactions | revenue |
+| --- | --- | --- | --- | --- |
+| 201701 | 64694 | 257708 | 713 | 106248.15 |
+| 201702 | 62192 | 233373 | 733 | 116111.6 |
+| 201703 | 69931 | 259522 | 993 | 150224.7 |
 
