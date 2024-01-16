@@ -222,7 +222,7 @@ The table shows some traffic website and their key metrics, which help analyze u
 
 ** 6.3 Revenue by traffic source by week, by month in June 2017**
 
-~~~aql
+~~~sql
 
 with 
 month_data as(
@@ -359,3 +359,8 @@ order by pd.month;
 | 201706 | 94.02          | 316.87               |
 | 201707 | 124.24            | 334.06               |
 
+ **Pageviews for Users Making a Purchase vs. Non-Purchasers:** The data highlights a significant difference in average pageviews between users who made a purchase and those who did not. On average, users who made a purchase tend to view much les pages on the website than those who did not. In June 2017, for instance, the average pageviews for purchasers (25.74) were much higher compared to non-purchasers (4.07).
+
+ **Engagement Patterns:** Users who open more webpages are likely not to engage with the website content, therefore they are not likely to make a purchase. The reason may be the users cannot find the appropriate context of the website, or they cannot find the product they want on the website. There might be a negative correlation between engagement and conversion.
+
+ **Behavioural insights:** The ones who makes purchase spend less time Dinhd
