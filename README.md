@@ -218,4 +218,144 @@ ORDER BY total_visits DESC;
 | google.com.br               | 1            |                     |             |
 | suche.t-online.de           | 1            | 1                   | 100         |
 
-The table shows some traffic website and their key metrics, which help analyze user behaviours and engagement. These metrics include: source, total_visits, total_no_of_bounces, bounce_rates. Bounce Rate is defined as the percentage of visitors that leave a webpage without taking an action, such as clicking on a link, filling out a form, or making a purchase. Because a lower bounce rate generally indicates that users are more engaged with the website content, while a higher bounce rate may suggest that users are leaving the site after viewing only a single page. 
+The table shows some traffic website and their key metrics, which help analyze user behaviours and engagement. These metrics include: source, total_visits, total_no_of_bounces, bounce_rates. Bounce Rate is defined as the percentage of visitors that leave a webpage without taking an action, such as clicking on a link, filling out a form, or making a purchase. Because a lower bounce rate generally indicates that users are more engaged with the website content, while a higher bounce rate may suggest that users are leaving the site after viewing only a single page. Throughout this data, several big website have large number of visits and number of bounces, however their bounces vary from 40% to 60%(google.com has 51.56%, direct link is 43%, youtube is a bit higher, 66%). This may indicate that users are more engaged with the content of these websites. There are some traffic websites which has high bounces rates: l.facebook.com with 88%, productforums.google.com with 84% and many websites have bounce rate almost 100% due to their lack of visits. It's important to note that while addressing high bounce rates is essential, the context of the source and user behavior should be thoroughly analyzed to determine the most effective strategies for improvement. 
+
+** 6.3 Revenue by traffic source by week, by month in June 2017**
+
+~~~aql
+
+with 
+month_data as(
+  SELECT
+    "Month" as time_type,
+    format_date("%Y%m", parse_date("%Y%m%d", date)) as month,
+    trafficSource.source AS source,
+    SUM(p.productRevenue)/1000000 AS revenue
+  FROM `bigquery-public-data.google_analytics_sample.ga_sessions_201706*`,
+    unnest(hits) hits,
+    unnest(product) p
+  WHERE p.productRevenue is not null
+  GROUP BY 1,2,3
+  order by revenue DESC
+),
+
+week_data as(
+  SELECT
+    "Week" as time_type,
+    format_date("%Y%W", parse_date("%Y%m%d", date)) as date,
+    trafficSource.source AS source,
+    SUM(p.productRevenue)/1000000 AS revenue
+  FROM `bigquery-public-data.google_analytics_sample.ga_sessions_201706*`,
+    unnest(hits) hits,
+    unnest(product) p
+  WHERE p.productRevenue is not null
+  GROUP BY 1,2,3
+  order by revenue DESC
+)
+
+select * from month_data
+union all
+select * from week_data
+order by revenue desc
+
+~~~~
+
+| time_type | time   | source                        | revenue  |
+|-----------|--------|-------------------------------|----------|
+| Month     | 201706 | (direct)                      | 97231.62 |
+| WEEK      | 201724 | (direct)                      | 30883.91 |
+| WEEK      | 201725 | (direct)                      | 27254.32 |
+| Month     | 201706 | google                        | 18757.18 |
+| WEEK      | 201723 | (direct)                      | 17302.68 |
+| WEEK      | 201726 | (direct)                      | 14905.81 |
+| WEEK      | 201724 | google                        | 9217.17  |
+| Month     | 201706 | dfa                           | 8841.23  |
+| WEEK      | 201722 | (direct)                      | 6884.9   |
+| WEEK      | 201726 | google                        | 5330.57  |
+| WEEK      | 201726 | dfa                           | 3704.74  |
+| Month     | 201706 | mail.google.com               | 2563.13  |
+| WEEK      | 201724 | mail.google.com               | 2486.86  |
+| WEEK      | 201724 | dfa                           | 2341.56  |
+| WEEK      | 201722 | google                        | 2119.39  |
+| WEEK      | 201722 | dfa                           | 1670.65  |
+| WEEK      | 201723 | dfa                           | 1124.28  |
+| WEEK      | 201723 | google                        | 1083.95  |
+| WEEK      | 201725 | google                        | 1006.1   |
+| WEEK      | 201723 | search.myway.com              | 105.94   |
+| Month     | 201706 | search.myway.com              | 105.94   |
+| Month     | 201706 | groups.google.com             | 101.96   |
+| WEEK      | 201725 | mail.google.com               | 76.27    |
+| Month     | 201706 | chat.google.com               | 74.03    |
+| WEEK      | 201723 | chat.google.com               | 74.03    |
+| WEEK      | 201724 | dealspotr.com                 | 72.95    |
+| Month     | 201706 | dealspotr.com                 | 72.95    |
+| WEEK      | 201725 | mail.aol.com                  | 64.85    |
+| Month     | 201706 | mail.aol.com                  | 64.85    |
+| WEEK      | 201726 | groups.google.com             | 63.37    |
+| Month     | 201706 | phandroid.com                 | 52.95    |
+| WEEK      | 201725 | phandroid.com                 | 52.95    |
+| Month     | 201706 | sites.google.com              | 39.17    |
+| WEEK      | 201725 | groups.google.com             | 38.59    |
+| WEEK      | 201725 | sites.google.com              | 25.19    |
+| Month     | 201706 | google.com                    | 23.99    |
+| WEEK      | 201725 | google.com                    | 23.99    |
+| Month     | 201706 | yahoo                         | 20.39    |
+| WEEK      | 201726 | yahoo                         | 20.39    |
+| WEEK      | 201723 | youtube.com                   | 16.99    |
+| Month     | 201706 | youtube.com                   | 16.99    |
+| WEEK      | 201724 | bing                          | 13.98    |
+| Month     | 201706 | bing                          | 13.98    |
+| WEEK      | 201722 | sites.google.com              | 13.98    |
+| WEEK      | 201724 | l.facebook.com                | 12.48    |
+| Month     | 201706 | l.facebook.com                | 12.48    |
+
+This table shows data of revenues generated from different sources during June 2017. The rows include time_type, time, source and revenue. 
+
+**Web Source Breakdown**: The dataset includes revenue from different sites such as direct site, google, dfa, mail, and facebook. Websites come from many different kind of sources, include direct web, search traffic, social website and workspace website,...
+**Time Analysis**: Revenue is reported on a weekly and monthly basis. In this data, revenue data is taken from June 2017 and its weeks of the year 2017.
+
+** 6.4: Average number of pageviews by purchaser type (purchasers vs non-purchasers) in June, July 2017 **
+
+~~~~sql
+
+with 
+purchaser_data as(
+  select
+      format_date("%Y%m",parse_date("%Y%m%d",date)) as month,
+      (sum(totals.pageviews)/count(distinct fullvisitorid)) as avg_pageviews_purchase,
+  from `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`
+    ,unnest(hits) hits
+    ,unnest(product) product
+  where _table_suffix between '0601' and '0731'
+  and totals.transactions>=1
+  and product.productRevenue is not null
+  group by month
+),
+
+non_purchaser_data as(
+  select
+      format_date("%Y%m",parse_date("%Y%m%d",date)) as month,
+      sum(totals.pageviews)/count(distinct fullvisitorid) as avg_pageviews_non_purchase,
+  from `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`
+      ,unnest(hits) hits
+    ,unnest(product) product
+  where _table_suffix between '0601' and '0731'
+  and totals.transactions is null
+  and product.productRevenue is null
+  group by month
+)
+
+select
+    pd.*,
+    avg_pageviews_non_purchase
+from purchaser_data pd
+left join non_purchaser_data using(month)
+order by pd.month;
+
+~~~~
+
+| month  | avg_pageviews_purchase | avg_pageviews_non_purchase |
+|--------|------------------------|----------------------------|
+| 201706 | 94.02          | 316.87               |
+| 201707 | 124.24            | 334.06               |
+
