@@ -404,3 +404,120 @@ group by month;
 | Month | avg_revenue_by_user_per_visit |
 | --- | --- |
 | 201707 | 43.85 |
+
+43.85 dollars is the average revenue by user per visit on website in July 2017. This suggests that an user spend 43.85 dollars for average per visit during July 2017. This could be an important metric to measure the marketing campaigns and the ability of a business to maximize the value from each transaction.
+
+**6.7 Other products purchased by customers who purchased product "YouTube Men's Vintage Henley" in July 2017**
+
+~~~~sql
+with buyer_list as(
+    SELECT
+        distinct fullVisitorId
+    FROM `bigquery-public-data.google_analytics_sample.ga_sessions_201707*`
+    , UNNEST(hits) AS hits
+    , UNNEST(hits.product) as product
+    WHERE product.v2ProductName = "YouTube Men's Vintage Henley"
+    AND totals.transactions>=1
+    AND product.productRevenue is not null
+)
+
+SELECT
+  product.v2ProductName AS other_purchased_products,
+  SUM(product.productQuantity) AS quantity
+FROM `bigquery-public-data.google_analytics_sample.ga_sessions_201707*`
+, UNNEST(hits) AS hits
+, UNNEST(hits.product) as product
+JOIN buyer_list using(fullVisitorId)
+WHERE product.v2ProductName != "YouTube Men's Vintage Henley"
+ and product.productRevenue is not null
+GROUP BY other_purchased_products
+ORDER BY quantity DESC;
+~~~~
+
+
+| other_purchased_products                                 | quantity |
+|----------------------------------------------------------|----------|
+| Google Sunglasses                                        | 20       |
+| Google Womens Vintage Hero Tee Black                     | 7        |
+| SPF-15 Slim & Slender Lip Balm                           | 6        |
+| Google Womens Short Sleeve Hero Tee Red Heather          | 4        |
+| YouTube Mens Fleece Hoodie Black                         | 3        |
+| Google Mens Short Sleeve Badge Tee Charcoal              | 3        |      
+| YouTube Twill Cap                                        | 2        |
+| Red Shine 15 oz Mug                                      | 2        |
+| Google Doodle Decal                                      | 2        |
+| Recycled Mouse Pad                                       | 2        |
+| Google Mens Short Sleeve Hero Tee Charcoal               | 2        |
+| Android Womens Fleece Hoodie                             | 2        |
+| 22 oz YouTube Bottle Infuser                             | 2        |
+| Android Mens Vintage Henley                              | 2        |
+| Crunch Noise Dog Toy	                                   | 2        |
+| Android Wool Heather Cap Heather/Black                   | 2        |
+| Google Mens Vintage Badge Tee Black                      | 1        |
+| Google Twill Cap                                         | 1        |
+| Google Mens Long & Lean Tee Grey                         | 1        |
+| Google Mens Long & Lean Tee Charcoal                     | 1        |
+| Google Laptop and Cell Phone Stickers                    | 1        |
+| Google Mens Bike Short Sleeve Tee Charcoal               | 1        |
+| Google 5-Panel Cap                                       | 1        |
+| Google Toddler Short Sleeve T-shirt Grey                 | 1        |
+| Android Sticker Sheet Ultra Removable                    | 1        |
+| YouTube Custom Decals                                    | 1        |
+| Four Color Retractable Pen                               | 1        |
+| Google Mens Long Sleeve Raglan Ocean Blue                | 1        |
+| Google Mens Vintage Badge Tee White                      | 1        |
+| Google Mens 100% Cotton Short Sleeve Hero Tee Red        | 1        |
+| Android Mens Vintage Tank                                | 1        |
+| Google Mens Performance Full Zip Jacket Black            | 1        |
+| 26 oz Double Wall Insulated Bottle                       | 1        |
+| Google Mens  Zip Hoodie                                  | 1        |
+| YouTube Womens Short Sleeve Hero Tee Charcoal            | 1        |
+| Google Mens Pullover Hoodie Grey                         | 1        |
+| YouTube Mens Short Sleeve Hero Tee White                 | 1        |
+| Android Mens Short Sleeve Hero Tee White                 | 1        |
+| Android Mens Pep Rally Short Sleeve Tee Navy             | 1        |
+| YouTube Mens Short Sleeve Hero Tee Black                 | 1        |
+| Google Slim Utility Travel Bag                           | 1        |
+| Android BTTF Moonshot Graphic Tee                        | 1        |
+| Google Mens Airflow 1/4 Zip Pullover Black               | 1        |
+| Google Womens Long Sleeve Tee Lavender                   | 1        |
+| 8 pc Android Sticker Sheet                               | 1        |
+| YouTube Hard Cover Journal                               | 1        |
+| Android Mens Short Sleeve Hero Tee Heather               | 1        |
+| YouTube Womens Short Sleeve Tri-blend Badge Tee Charcoal | 1        |
+| Google Mens Performance 1/4 Zip Pullover Heather/Black   | 1        |
+| YouTube Mens Long & Lean Tee Charcoal                    | 1        |
+
+The data provides the name and quantities sold of poroducts, which are purchased by customers who purchase "YouTube Men's Vintage Henley" during July 2017. Overall, the data provides valuable insights into customer preferences, product popularity, and potential areas for marketing and merchandising strategies. Further analysis of historical data and integration with customer demographics could provide a more comprehensive understanding of these trends.
+
+**6.8 Calculate cohort map from product view to add_to_cart/number_product_view.**
+
+~~~sql
+with product_data as(
+select
+    format_date('%Y%m', parse_date('%Y%m%d',date)) as month,
+    count(CASE WHEN eCommerceAction.action_type = '2' THEN product.v2ProductName END) as num_product_view,
+    count(CASE WHEN eCommerceAction.action_type = '3' THEN product.v2ProductName END) as num_add_to_cart,
+    count(CASE WHEN eCommerceAction.action_type = '6' and product.productRevenue is not null THEN product.v2ProductName END) as num_purchase
+FROM `bigquery-public-data.google_analytics_sample.ga_sessions_*`
+,UNNEST(hits) as hits
+,UNNEST (hits.product) as product
+where _table_suffix between '20170101' and '20170331'
+and eCommerceAction.action_type in ('2','3','6')
+group by month
+order by month
+)
+
+select
+    *,
+    round(num_add_to_cart/num_product_view * 100, 2) as add_to_cart_rate,
+    round(num_purchase/num_product_view * 100, 2) as purchase_rate
+from product_data;
+
+~~~~
+
+| Row | month | num_product_view | num_add_to_cart | num_purchase | add_to_cart_rate | purchase_rate |
+| --- | --- | --- | --- | --- | --- | --- |
+| 201701 | 25787 | 7342 | 2143 | 28.47 | 8.31 |
+| 201702 | 21489 | 7360 | 2060 | 34.25 | 9.59 |
+| 201703 | 23549 | 8782 | 2977 | 37.29 | 12.64 |
