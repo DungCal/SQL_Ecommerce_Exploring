@@ -367,27 +367,40 @@ order by pd.month;
 
  **Conversion Optimization:** The business can leverage this data to optimize its website's design and content to turn conversion rate into revenues. This could involve extracting the needs of users, encouraging them to buy, order more discounts, or recommending the mosst suitable products for users spend much time in pages,...
 
- ** 6.5 Average number of transactions per user that made a purchase in July 2017 **
+ **6.5 Average number of transactions per user that made a purchase in July 2017**
 
  ~~~~sql
-with 
-  predata as( 
-    SELECT 
-      '201707' as month
-      ,sum(totals.transactions) as total
-    FROM `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`,
-    unnest (hits) as hits,
-    unnest (hits.product) as product 
-    where _table_suffix between '0701' and '0731' and totals.transactions >=1 and productRevenue is not null
-    group by fullVisitorId)
-
-select 
-  month
-  ,avg(total) as Avg_total_transactions_per_user
-from predata
-group by predata.month
+select
+    format_date("%Y%m",parse_date("%Y%m%d",date)) as month,
+    sum(totals.transactions)/count(distinct fullvisitorid) as Avg_total_transactions_per_user
+from `bigquery-public-data.google_analytics_sample.ga_sessions_201707*`
+    ,unnest (hits) hits,
+    unnest(product) product
+where  totals.transactions>=1
+and totals.totalTransactionRevenue is not null
+and product.productRevenue is not null
+group by month;
 ~~~~
  
 | Month | Avg_total_transactions_per_user |
 | --- | --- |
 | 201707 | 4.163900415 |
+
+This table shows the average number of transactions which an user making purchases made in July 2017. This number can be used to understand user behavior, track user engagement with your platform, or evaluate the effectiveness of marketing campaigns or promotions during that specific month.
+
+**6.6 Average amount of money spent per session. Only include purchaser data in July 2017**
+
+~~~~sql
+select
+    format_date("%Y%m",parse_date("%Y%m%d",date)) as month,
+    ((sum(product.productRevenue)/sum(totals.visits))/power(10,6)) as avg_revenue_by_user_per_visit
+from `bigquery-public-data.google_analytics_sample.ga_sessions_201707*`
+  ,unnest(hits) hits
+  ,unnest(product) product
+where product.productRevenue is not null
+group by month;
+~~~~
+
+| Month | avg_revenue_by_user_per_visit |
+| --- | --- |
+| 201707 | 43.85 |
