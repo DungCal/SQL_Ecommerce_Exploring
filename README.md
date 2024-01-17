@@ -363,4 +363,31 @@ order by pd.month;
 
  **Engagement Patterns:** Users who open more webpages are likely not to engage with the website content, therefore they are not likely to make a purchase. The reason may be the users cannot find the appropriate context of the website, or they cannot find the product they want on the website. There might be a negative correlation between engagement and conversion.
 
- **Behavioural insights:** The ones who makes purchase spend less time Dinhd
+ **Behavioural insights:** The ones who makes purchase spend less time reading content in the store than the ones who do not. Although 94 pages is not a small number but these users decided to purchase without using much time to explore the products, read reviews and compare between products. On the contrary, users who spend much time on pages tends not to order. This may indicate that these users have no intention of making purchases and merely browse without interacting. Moreover, the website does not contain the content or products they want, they have to surf for a while. 
+
+ **Conversion Optimization:** The business can leverage this data to optimize its website's design and content to turn conversion rate into revenues. This could involve extracting the needs of users, encouraging them to buy, order more discounts, or recommending the mosst suitable products for users spend much time in pages,...
+
+ ** 6.5 Average number of transactions per user that made a purchase in July 2017 **
+
+ ~~~~sql
+with 
+  predata as( 
+    SELECT 
+      '201707' as month
+      ,sum(totals.transactions) as total
+    FROM `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`,
+    unnest (hits) as hits,
+    unnest (hits.product) as product 
+    where _table_suffix between '0701' and '0731' and totals.transactions >=1 and productRevenue is not null
+    group by fullVisitorId)
+
+select 
+  month
+  ,avg(total) as Avg_total_transactions_per_user
+from predata
+group by predata.month
+~~~~
+ 
+| Month | Avg_total_transactions_per_user |
+| --- | --- |
+| 201707 | 4.163900415 |
