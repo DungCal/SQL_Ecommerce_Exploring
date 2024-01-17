@@ -526,7 +526,7 @@ The table shows 5 metrics and rates of views, add-to-cart and purchases in three
 
 More details, from Feb to March 2017, nunmber of add-to-cart products and number of purchases show sharp inceases. Therefore, add-to-cart rate and purchase rate notably increase in March 2017. This suggests that there is improvement in user experience or marketing campaigns.
 
-<div id='cau7'/>
+<div id='c7'/>
   
 ## 7. Conclusion
 
