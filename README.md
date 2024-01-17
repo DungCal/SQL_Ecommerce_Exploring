@@ -516,7 +516,7 @@ from product_data;
 
 ~~~~
 
-| Row | month | num_product_view | num_add_to_cart | num_purchase | add_to_cart_rate | purchase_rate |
+| month | num_product_view | num_add_to_cart | num_purchase | add_to_cart_rate | purchase_rate |
 | --- | --- | --- | --- | --- | --- | --- |
 | 201701 | 25787 | 7342 | 2143 | 28.47 | 8.31 |
 | 201702 | 21489 | 7360 | 2060 | 34.25 | 9.59 |
