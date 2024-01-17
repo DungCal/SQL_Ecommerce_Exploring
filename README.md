@@ -521,3 +521,19 @@ from product_data;
 | 201701 | 25787 | 7342 | 2143 | 28.47 | 8.31 |
 | 201702 | 21489 | 7360 | 2060 | 34.25 | 9.59 |
 | 201703 | 23549 | 8782 | 2977 | 37.29 | 12.64 |
+
+The table shows 5 metrics and rates of views, add-to-cart and purchases in three first months of 2017. The overall trend is increase, but for number of products views. This may suggests that the need of our customers is decreasing. 
+
+More details, from Feb to March 2017, nunmber of add-to-cart products and number of purchases show sharp inceases. Therefore, add-to-cart rate and purchase rate notably increase in March 2017. This suggests that there is improvement in user experience or marketing campaigns.
+
+<div id='cau7'/>
+  
+## 7. Conclusion
+
+- This is the author's opportunity to learn about the marketing industry and the customer journey through this e-commerce dataset.
+
+- In analyzing the e-commerce dataset using BigQuery, the author understands customer behavior through the bounce rate, transaction, revenue, visit, and purchase.
+  
+- The author gained insights into which marketing channels drive traffic and sales by examining referral sources. Investing resources in effective channels and optimizing underperforming ones can improve marketing ROI.
+
+- In conclusion, exploring the e-commerce dataset on BigQuery unearthed a wealth of insights critical for strategic decision-making to help the business can optimize operations, enhance customer experiences, and drive revenue.
