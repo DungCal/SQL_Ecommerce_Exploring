@@ -1,5 +1,6 @@
 # SQL_Ecommerce_Exploring
 
+
 ## Table of Contents:
 1. [Introduction and Motivation](#c1)
 2. [The goal of creating this project](#c2)
